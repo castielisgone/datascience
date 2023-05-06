@@ -19,6 +19,6 @@ jobs:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           # Optional
           LANGUAGE: Portuguese
-          MODEL: ada
+          MODEL: 
           top_p: 1
           temperature: 1
