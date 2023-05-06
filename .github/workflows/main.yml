@@ -1,24 +1,19 @@
 name: Code Review
 
-permissions:
-  contents: read
-  pull-requests: write
-
 on:
-  pull_request:
-    types: [opened, reopened, synchronize]
+  issue_comment:
+    types: [created, edited]
 
 jobs:
-  test:
-    if: ${{ contains(github.event.*.labels.*.name, 'gpt review') }} # Optional; to run only when a label is attached
+  code-review:
     runs-on: ubuntu-latest
+    if: github.event.comment.user.login == 'adshao' && startsWith(github.event.comment.body, 'chatgpt')
     steps:
-      - uses: anc95/ChatGPT-CodeReview@main
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-          # Optional
-          LANGUAGE: Chinese
-          MODEL: 
-          top_p: 1
-          temperature: 1
+    - name: OpenAI ChatGPT Code Review
+      uses: adshao/chatgpt-code-review-action@v0.2
+      with:
+        PROGRAMMING_LANGUAGE: 'Python'
+        OPENAI_TOKEN: ${{ secrets.OPENAI_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+        FULL_REVIEW_COMMENT: 'chatgpt'
+        REVIEW_COMMENT_PREFIX: 'chatgpt:'
